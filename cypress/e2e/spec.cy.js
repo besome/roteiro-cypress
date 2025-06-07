@@ -68,4 +68,73 @@ describe('TODOMvc App', () => {
       .children()
       .should('have.length', 2);
   });
+
+  it('Cria e edita uma tarefa', () =>{
+    cy.visit('');
+
+     cy.get('[data-cy=todo-input]')
+      .type('Garfield{enter}')
+
+      cy.get ('[data-cy=todos-list] li')
+      .first()
+      .should('have.length', 1)
+      .first()
+      .should('have.text', 'Garfield');
+
+      cy.get('[data-cy=todos-list] li')
+      .first()
+      .dblclick()
+      .get('.edit')
+      .clear()
+      .type('Marmore{enter}');
+
+      cy.get('[data-cy=todos-list] li')
+      .first()
+      .should('have.text', 'Marmore')
+      .and('not.have.class', 'editing');
+
+  });
+
+  it('verifica se está vazio', () =>{
+    cy.visit('');
+
+    cy.get('[data-cy=todos-list]')
+    .children()
+    .should('have.length',0); 
+  });
+
+  it('deve marcar e desmarcar uma tarefa corretamente', () => {
+  cy.visit('');
+
+  cy.get('[data-cy=todo-input]')
+  .type('Garfield{enter}');
+
+  cy.get('[data-cy=todos-list] li')
+    .first()
+    .find('[data-cy=toggle-todo-checkbox]')
+    .click()
+    .should('be.checked');
+
+  cy.get('[data-cy=filter-active-link]')
+  .click();
+  cy.get('[data-cy=todos-list] li')
+  .should('not.exist');
+
+  cy.get('[data-cy=filter-completed-link]')
+  .click();
+  cy.get('[data-cy=todos-list] li')
+    .should('have.length', 1)
+    .and('contain.text', 'Garfield');
+
+  cy.get('[data-cy=todos-list] li')
+    .first()
+    .find('[data-cy=toggle-todo-checkbox]')
+    .click();
+
+  cy.get('[data-cy=filter-active-link]')
+  .click();
+  cy.get('[data-cy=todos-list] li')
+    .should('have.length', 1)
+    .and('contain.text', 'Garfield');
+});
 });
